@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fizika Viktorinasi — 2-semestr</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0e1a;--surface:#111827;--surface2:#1a2235;--border:#1e2d45;--accent:#3b82f6;--accent2:#06b6d4;--success:#10b981;--danger:#ef4444;--warn:#f59e0b;--text:#f1f5f9;--text2:#94a3b8;--text3:#475569}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(59,130,246,0.15),transparent),radial-gradient(ellipse 60% 40% at 90% 100%,rgba(6,182,212,0.1),transparent);pointer-events:none;z-index:0}
+.wrap{max-width:660px;margin:0 auto;padding:1.5rem 1rem;position:relative;z-index:1}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem}
+.logo{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent2);letter-spacing:.05em}
+.pill{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:var(--accent);font-size:11px;font-family:'JetBrains Mono',monospace;padding:4px 10px;border-radius:100px}
+.hero h1{font-size:clamp(28px,6vw,40px);font-weight:700;line-height:1.2;margin-bottom:.75rem;background:linear-gradient(135deg,#f1f5f9,#94a3b8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:2rem;max-width:480px}
+.vgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.5rem}
+.vc{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.25rem;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.vc::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(59,130,246,.08),rgba(6,182,212,.04));opacity:0;transition:opacity .2s}
+.vc:hover{border-color:rgba(59,130,246,.5);transform:translateY(-2px);box-shadow:0 8px 32px rgba(59,130,246,.12)}
+.vc:hover::before{opacity:1}
+.vc:active{transform:translateY(0)}
+.vnum{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);margin-bottom:6px;letter-spacing:.1em}
+.vtitle{font-size:16px;font-weight:600;margin-bottom:2px}
+.vdesc{font-size:12px;color:var(--text2)}
+.varrow{position:absolute;top:1.25rem;right:1.25rem;color:var(--text3);font-size:18px;transition:transform .2s,color .2s}
+.vc:hover .varrow{transform:translate(2px,-2px);color:var(--accent)}
+.pbar{height:3px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:1.25rem}
+.pfill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .4s cubic-bezier(.4,0,.2,1)}
+.meta{display:flex;gap:16px;margin-bottom:1rem;flex-wrap:wrap}
+.chip{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);font-family:'JetBrains Mono',monospace}
+.chip svg{width:14px;height:14px}
+.warn-t{color:var(--warn)!important}
+.qcard{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:1.5rem;margin-bottom:1rem;animation:fu .3s ease}
+.qlbl{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent2);margin-bottom:10px;letter-spacing:.1em}
+.qtext{font-size:15px;font-weight:500;line-height:1.65}
+.opts{display:grid;gap:8px;margin-top:1.25rem}
+.ob{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 16px;font-size:14px;font-family:'Sora',sans-serif;color:var(--text);cursor:pointer;text-align:left;transition:all .15s;display:flex;align-items:center;gap:12px;line-height:1.5}
+.ob:hover:not(:disabled){background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.4)}
+.ob:disabled{cursor:default}
+.ob.correct{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.5);color:#6ee7b7}
+.ob.wrong{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.4);color:#fca5a5}
+.ob.reveal{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.4);color:#6ee7b7}
+.okey{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;width:22px;height:22px;border-radius:6px;background:var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ob.correct .okey,.ob.reveal .okey{background:rgba(16,185,129,.3)}
+.ob.wrong .okey{background:rgba(239,68,68,.3)}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.btn{font-family:'Sora',sans-serif;font-size:13px;font-weight:500;padding:10px 18px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{background:var(--surface2);color:var(--text)}
+.btn.pr{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.pr:hover{background:#2563eb;border-color:#2563eb}
+.rc{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:2rem;text-align:center}
+.rring{width:120px;height:120px;margin:0 auto 1.5rem;position:relative}
+.rring svg{transform:rotate(-90deg)}
+.rpct{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.rtitle{font-size:20px;font-weight:600;margin-bottom:4px}
+.rsub{font-size:13px;color:var(--text2);margin-bottom:1.5rem}
+.sgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:1.5rem}
+.sbox{background:var(--surface2);border-radius:12px;padding:12px 8px}
+.sval{font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.slbl{font-size:11px;color:var(--text2);margin-top:2px}
+.sbox.ok .sval{color:var(--success)}.sbox.err .sval{color:var(--danger)}.sbox.pct .sval{color:var(--accent)}
+.rbtns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.qhdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+@keyframes fu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div id="sw">
+  <div class="top"><span class="logo">⚛ FIZIKA — 2-semestr</span><span class="pill">100 savol</span></div>
+  <div class="hero">
+    <h1>Fizika<br>Viktorinasi</h1>
+    <p>ON test savollari asosida tuzilgan interaktiv viktorina. Har bir variant 25 ta savol va 4 ta javob variantidan iborat. Har savolga 30 soniya vaqt beriladi.</p>
+  </div>
+  <p style="font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--text3);margin-bottom:14px;letter-spacing:.05em">VARIANT TANLANG</p>
+  <div class="vgrid">
+    <div class="vc" onclick="startQuiz(1)"><div class="vnum">VAR — 01</div><div class="vtitle">1-variant</div><div class="vdesc">Savollar 1–25</div><span class="varrow">↗</span></div>
+    <div class="vc" onclick="startQuiz(2)"><div class="vnum">VAR — 02</div><div class="vtitle">2-variant</div><div class="vdesc">Savollar 26–50</div><span class="varrow">↗</span></div>
+    <div class="vc" onclick="startQuiz(3)"><div class="vnum">VAR — 03</div><div class="vtitle">3-variant</div><div class="vdesc">Savollar 51–75</div><span class="varrow">↗</span></div>
+    <div class="vc" onclick="startQuiz(4)"><div class="vnum">VAR — 04</div><div class="vtitle">4-variant</div><div class="vdesc">Savollar 76–100</div><span class="varrow">↗</span></div>
+  </div>
+</div>
+
+<div id="sq" style="display:none">
+  <div class="qhdr"><div style="font-size:14px;font-weight:600" id="vlbl"></div><span class="pill" id="qc"></span></div>
+  <div class="pbar"><div class="pfill" id="pf" style="width:0%"></div></div>
+  <div class="meta">
+    <div class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span id="td">30s</span></div>
+    <div class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span id="sl">0 to'g'ri</span></div>
+  </div>
+  <div class="qcard">
+    <div class="qlbl" id="qn"></div>
+    <div class="qtext" id="qt"></div>
+    <div class="opts" id="opts"></div>
+  </div>
+  <div class="nav">
+    <button class="btn" onclick="goHome()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Bosh sahifa</button>
+    <button class="btn pr" id="nb" onclick="nextQ()" style="display:none">Keyingi →</button>
+  </div>
+</div>
+
+<div id="sr" style="display:none">
+  <div class="top"><span class="logo">⚛ FIZIKA — 2-semestr</span></div>
+  <div class="rc">
+    <div class="rring">
+      <svg width="120" height="120" viewBox="0 0 120 120">
+        <circle cx="60" cy="60" r="52" fill="none" stroke="#1a2235" stroke-width="10"/>
+        <circle cx="60" cy="60" r="52" fill="none" stroke="url(#rg)" stroke-width="10" stroke-linecap="round" id="ra" stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
+        <defs><linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs>
+      </svg>
+      <div class="rpct" id="rp">0%</div>
+    </div>
+    <div class="rtitle" id="rv"></div>
+    <div class="rsub" id="rs"></div>
+    <div class="sgrid">
+      <div class="sbox ok"><div class="sval" id="rc2">0</div><div class="slbl">To'g'ri</div></div>
+      <div class="sbox err"><div class="sval" id="rw">0</div><div class="slbl">Noto'g'ri</div></div>
+      <div class="sbox pct"><div class="sval" id="rpct">0%</div><div class="slbl">Natija</div></div>
+    </div>
+    <div class="rbtns">
+      <button class="btn pr" onclick="startQuiz(cv)">Qayta boshlash</button>
+      <button class="btn" onclick="goHome()">Variant tanlash</button>
+    </div>
+  </div>
+</div>
+
+</div>
+<script>
+const Q=[
+  {q:"Elektrolitlarda tok o'tganda, uning qanday ta'sirlari kuzatiladi?",o:["Faqat issiqlik ta'siri","Kimyoviy va issiqlik ta'siri","Faqat kimyoviy ta'sir","Magnit ta'siri"],a:1},
+  {q:"Yorug'lik ta'sirida jism sirtidan elektronlarning ajralib chiqish hodisasi nima deb ataladi?",o:["Ionizatsiya","Fotoeffekt","Termoemissiya","Difraksiya"],a:1},
+  {q:"Magnit maydonning elektr maydon bilan bog'liqligini tajribada birinchi bo'lib aniqlagan olim kim?",o:["Amper","Faraday","Oersted","Maksvell"],a:2},
+  {q:"O'zgarmas tok o'tayotgan o'tkazgich atrofida qanday maydon hosil bo'ladi?",o:["Elektr maydoni","Magnit maydoni","Elektromagnit maydoni","Gravitatsion maydon"],a:1},
+  {q:"Modda chiqarayotgan nurlanish intensivligining chastotaga bog'liqligi nima deb ataladi?",o:["Nurlanish spektri","Yutilish spektri","Difraksiya panjarasi","Interferensiya"],a:0},
+  {q:"Zanjir qismidagi tok kuchi ...",o:["Kuchlanishga teskari proporsional","Kuchlanishga to'g'ri, qarshilikka teskari proporsional","Faqat qarshilikka bog'liq","Kuchlanish va qarshilikka to'g'ri proporsional"],a:1},
+  {q:"Yarim o'tkazgichlarda qanday zarrachalar tok tashishda xizmat qiladi?",o:["Faqat elektronlar","Faqat kovaklar","Elektronlar va kovaklar","Ionlar"],a:2},
+  {q:"Linza optik kuchining birligi nima?",o:["Metr","Dioptri","Vatt","Lyuks"],a:1},
+  {q:"Lorens kuchi harakatdagi zaryadli zarrachaning tezligini qanday o'zgartiradi?",o:["Tezlikni kamaytiradi","Tezlikni oshiradi","Tezlik modulini o'zgartirmaydi","Zarrachani to'xtatadi"],a:2},
+  {q:"Yorug'lik bir muhitdan ikkinchi muhitga o'tganda, qaysi kattalik o'zgarmaydi?",o:["Tezligi","To'lqin uzunligi","Chastotasi","Intensivligi"],a:2},
+  {q:"Quyidagi kuchlardan qaysi biri ish bajarmaydi?",o:["Tortishish kuchi","Lorens kuchi","Ishqalanish kuchi","Elastiklik kuchi"],a:1},
+  {q:"Yorug'lik qanday sharoitda to'g'ri chiziq bo'ylab tarqalishdan chetlashadi?",o:["Vakuumda","To'siq yoki tirqishdan o'tganda","Shishadan o'tganda","Suvdan o'tganda"],a:1},
+  {q:"Magnit shimoliy qutbi bilan o'tkazgich halqaga kiritilganda, halqa magnitga tortiladi yoki itiladimi?",o:["Tortiladi","Itiladi","Harakatlanmaydi","Avval tortiladi, keyin itiladi"],a:1},
+  {q:"Solenoiddagi o'ramlar soni 2,5 marta ortsa, undagi induksion EYK qanday o'zgaradi?",o:["2,5 marta ortadi","2,5 marta kamayadi","O'zgarmaydi","6,25 marta ortadi"],a:0},
+  {q:"G'altakdan 100 A tok o'tganda, unda 25 Wb magnit oqim hosil bo'lsa, g'altakning induktivligi qanday (H)?",o:["0,25 H","2500 H","4 H","25 H"],a:0},
+  {q:"Tebranish konturidagi kondensatorning maksimal energiyasi 2 mJ. Yarim davrdan keyin uning energiyasi qanday (mJ)?",o:["0 mJ","1 mJ","2 mJ","4 mJ"],a:2},
+  {q:"O'zgaruvchan tok generatorining aylanish tezligi 2 marta kamaysa, tokning chastotasi qanday o'zgaradi?",o:["2 marta ortadi","2 marta kamayadi","O'zgarmaydi","4 marta kamayadi"],a:1},
+  {q:"O'zgaruvchan tok chastotasi 2 marta orttirilganda, elektr zanjirning aktiv qarshiligi qanday o'zgaradi?",o:["2 marta ortadi","2 marta kamayadi","O'zgarmaydi","4 marta ortadi"],a:2},
+  {q:"Induktiv g'altakka kiritilgan ferromagnit o'zak qanday vazifani bajaradi?",o:["Induktivlikni kamaytiradi","Induktivlikni oshiradi","Qarshilikni kamaytiradi","Chastotani o'zgartiradi"],a:1},
+  {q:"Transformator qanday asbob?",o:["O'zgarmas tokni kuchaytiruvchi","O'zgaruvchan tok kuchlanishini o'zgartirishga mo'ljallangan","Elektr energiyasini mexanik energiyaga aylantiruvchi","Tokning chastotasini o'zgartiruvchi"],a:1},
+  {q:"Ishlayotgan transformator ikkinchi chulg'amidan olinayotgan tok oshishi bilan birinchi chulg'amga ulangan ampermetr ko'rsatishi qanday o'zgaradi?",o:["Kamayadi","O'zgarmaydi","Ortadi","Nolga tushadi"],a:2},
+  {q:"Kuchaytiruvchi transformatorda qaysi chulg'amdagi simning kesimi katta bo'lishi kerak?",o:["Birlamchi chulg'am","Ikkilamchi chulg'am","Ikkalasida teng","Farqi yo'q"],a:1},
+  {q:"Elektromagnit to'lqinlar to'lqinning qaysi turiga kiradi?",o:["Bo'ylama to'lqin","Ko'ndalang to'lqin","Aralash to'lqin","Mexanik to'lqin"],a:1},
+  {q:"Chastotasi 10 MHz bo'lgan elektromagnit to'lqinning uzunligi qanday (m)?",o:["30 m","3 m","300 m","0,03 m"],a:0},
+  {q:"Elektromagnit to'lqinlar qanday sharoitda nurlanadi?",o:["Zaryadlar tinch holatda bo'lganda","Zaryadlar tezlashganda","Zaryadlar bir tekisda harakat qilganda","Magnit maydoni o'zgarmasa"],a:1},
+  {q:"Uyali telefon 100 MHz chastotada ishlaydi. Uning ishchi to'lqin uzunligi qanday?",o:["3 m","30 m","0,3 m","300 m"],a:0},
+  {q:"Radiolokatordan tarqalgan signal 0,5 ms o'tgach nishondan qaytdi. Nishon qanday masofada joylashgan (km)?",o:["75 km","150 km","300 km","50 km"],a:0},
+  {q:"Agar radiolokator 1 s da 1000 ta impuls nurlasa, u ko'pi bilan qanday masofadagi ob'ektni kuzata oladi (km)?",o:["150 km","300 km","75 km","50 km"],a:0},
+  {q:"Yorug'lik nuri nima?",o:["To'lqin frontiga perpendikulyar yo'nalish","To'lqin frontiga parallel yo'nalish","Elektromagnit to'lqinning yon tomoni","Magnit maydoni chiziqlari"],a:0},
+  {q:"Nurning ikki muhit chegarasiga tushish burchagi oshirilsa, nisbiy sindirish ko'rsatkichi ...",o:["Ortadi","Kamayadi","O'zgarmaydi","Nolga teng bo'ladi"],a:2},
+  {q:"Shishaga tushuvchi va qaytgan nurlar orasidagi burchak 60° va n=1,5. Sinish burchagining sinusi qanday?",o:["sin60°/1,5≈0,577","sin30°/1,5≈0,333","1,5·sin30°=0,75","sin30°=0,5"],a:1},
+  {q:"Yorug'lik vakuumdan n=2 bo'lgan muhitga o'tganda to'lqin uzunligi qanday o'zgaradi?",o:["2 marta ortadi","2 marta kamayadi","O'zgarmaydi","4 marta kamayadi"],a:1},
+  {q:"Yorug'lik vakuumdan n=2 bo'lgan muhitga o'tganda to'lqin chastotasi qanday o'zgaradi?",o:["2 marta ortadi","2 marta kamayadi","O'zgarmaydi","4 marta kamayadi"],a:2},
+  {q:"Yorug'lik suvdan shishaga o'tganda, to'la qaytish yuz berishi mumkinmi?",o:["Ha, har doim","Yo'q, hech qachon","Faqat tushish burchagi kichik bo'lsa","Faqat ma'lum burchak ostida tushganda"],a:1},
+  {q:"Muhit sindirish ko'rsatkichining tushayotgan yorug'lik chastotasiga bog'liqligi ... deb ataladi.",o:["Interferensiya","Dispersiya","Difraksiya","Qutblanish"],a:1},
+  {q:"Shisha prizmaning oq yorug'likni spektrga ajratishi nimaga asoslangan?",o:["Interferensiyaga","Difraksiyaga","Dispersiyaga","Qutblanishga"],a:2},
+  {q:"Yorug'lik to'lqinlarining vakuumda tarqalish tezligi nimalarga bog'liq?",o:["Chastotasiga bog'liq","To'lqin uzunligiga bog'liq","Yorug'lik manbaiga bog'liq","Hech narsaga bog'liq emas"],a:3},
+  {q:"Spektrning ko'zga ko'rinadigan qismidagi qaysi nurning chastotasi eng katta?",o:["Qizil","Sariq","Binafsha","Yashil"],a:2},
+  {q:"Ko'zga ko'rinadigan nurlardan qaysi biri moddalarga tushganda kamroq sinadi?",o:["Binafsha","Qizil","Yashil","Ko'k"],a:1},
+  {q:"Qanday rangdagi nur uchun shishaning sindirish ko'rsatkichi eng katta bo'ladi?",o:["Qizil","Sariq","Yashil","Binafsha"],a:3},
+  {q:"Quyida keltirilgan qaysi nurlar uchun yig'uvchi linzaning fokus masofasi eng katta bo'ladi?",o:["Binafsha","Ko'k","Qizil","Yashil"],a:2},
+  {q:"Quyosh yorug'ligi tarkibidagi qaysi nurning moddalardagi tezligi eng katta?",o:["Binafsha","Ko'k","Yashil","Qizil"],a:3},
+  {q:"Yorug'likning rangi uning qaysi parametriga bog'liq?",o:["Amplitudasiga","Chastotasiga","Intensivligiga","Fazasiga"],a:1},
+  {q:"Oq qog'ozga qizil harflar yozilgan. Zangori shisha orqali qaralsa, harflar qanday rangda tuyuladi?",o:["Qizil","Yashil","Qora","Zangori"],a:2},
+  {q:"Yashil rangli shisha idishga qizil siyoh quyilgan. Siyoh qanday rangda ko'rinadi?",o:["Yashil","Qizil","Qora","Sariq"],a:2},
+  {q:"Qanday to'lqinlar kogerent to'lqinlar deyiladi?",o:["Bir xil amplitudali","Bir xil chastotali va doimiy faza farqli","Bir xil to'lqin uzunlikli","Bir yo'nalishda tarqaluvchi"],a:1},
+  {q:"Har xil to'lqin uzunlikdagi ikkita nur uchun interferensiya kuzatilishi mumkinmi?",o:["Ha, har doim","Yo'q, hech qachon","Faqat kogerent bo'lsa","Faqat bir xil amplitudali bo'lsa"],a:1},
+  {q:"Yorug'lik to'lqinlarining tarqalishda to'g'ri chiziqdan og'ishi va to'siqni aylanib soya sohasiga o'tishi ... deb ataladi.",o:["Interferensiya","Qutblanish","Difraksiya","Dispersiya"],a:2},
+  {q:"1 mm da 1000 ta shtrixi bor difraksion panjaraning doimiysini (mkm) aniqlang.",o:["0,001 mkm","1 mkm","1000 mkm","100 mkm"],a:1},
+  {q:"Yorug'lik to'lqinining bo'ylama yoki ko'ndalang ekanligini qaysi hodisa orqali aniqlash mumkin?",o:["Interferensiya","Difraksiya","Qutblanish","Dispersiya"],a:2},
+  {q:"Quyidagilardan qaysilari qutblanish xossasiga ega: 1) tovush to'lqini; 2) yorug'lik to'lqini; 3) radioto'lqinlar?",o:["Faqat 1","Faqat 2","2 va 3","Barcha uchala"],a:2},
+  {q:"Quyidagilardan qaysilari yorug'likning to'lqin nazariyasi asosida tushuntiriladi: 1) interferensiya; 2) difraksiya; 3) fotoeffekt; 4) qutblanish?",o:["Faqat 3","1, 2 va 4","Faqat 1 va 2","Barcha to'rttasi"],a:1},
+  {q:"Jismning tezligi yorug'lik tezligiga yaqin bo'lsa, uning zichligi tinchlikdagi zichlikka nisbatan qanday o'zgaradi?",o:["Kamayadi","O'zgarmaydi","Ortadi","Nolga teng bo'ladi"],a:2},
+  {q:"Moddalar qanday holatda chiziqli spektrga ega bo'lgan yorug'lik chiqaradi?",o:["Qattiq holatda","Suyuq holatda","Gaz holatda (siyrak)","Plazma holatida"],a:2},
+  {q:"Moddaning qanday holatida yo'l-yo'l (polosa) spektr kuzatiladi?",o:["Siyrak gazda","Gaz molekulalarida","Qattiq yoki suyuq holatda","Atomlarda"],a:2},
+  {q:"Ingichka yorug'lik oqimini spektrga ajratish uchun quyidagilardan qaysilaridan foydalanish mumkin: 1) shisha prizma; 2) difraksion panjara; 3) shisha linza?",o:["Faqat 3","Faqat 1","1 va 2","Barcha uchala"],a:2},
+  {q:"Quyidagi hodisalarning qaysi biri yorug'likning to'g'ri chiziq bo'ylab tarqalish qonuni asosida tushuntiriladi?",o:["Interferensiya","Difraksiya","Soya hosil bo'lishi","Qutblanish"],a:2},
+  {q:"Yassi ko'zgu oldida odam turibdi. Agar u ko'zguga 1 m yaqinlashsa, odam va uning tasviri orasidagi masofa qanday o'zgaradi?",o:["1 m kamayadi","2 m kamayadi","O'zgarmaydi","4 m kamayadi"],a:1},
+  {q:"Eng yaxshi ko'rish masofasi 30 cm bo'lsa, ko'zgudagi tasvirini yaxshiroq ko'rish uchun ko'zgudan necha cm masofada turish kerak?",o:["15 cm","30 cm","60 cm","45 cm"],a:0},
+  {q:"Odam vertikal joylashgan yassi ko'zgu tekisligidan 3 m uzoqlashsa, u bilan uning tasviri orasidagi masofa qanday o'zgaradi?",o:["3 m ortadi","6 m ortadi","O'zgarmaydi","9 m ortadi"],a:1},
+  {q:"Lupada qanday tasvir hosil bo'ladi?",o:["Kichiklashgan haqiqiy","Kattalashgan xayoliy","Kichiklashgan xayoliy","Kattalashgan haqiqiy"],a:1},
+  {q:"Quyidagi optik asboblarning qaysi birida buyumning kattalashgan haqiqiy tasviri hosil bo'ladi?",o:["Lupa","Ko'zgu","Fotoapparatlarda","Mikroskop"],a:3},
+  {q:"Buyum linzadan uning ikkilangan fokus masofasidan uzoqroqda joylashsa, qanday tasvir hosil bo'ladi?",o:["Kattalashgan xayoliy","Kichiklashgan haqiqiy","Kattalashgan haqiqiy","Teskari xayoliy"],a:1},
+  {q:"Nuqtaviy yorug'lik manbai fokus masofasi F bo'lgan sochuvchi linzaning fokusida turibdi. Tasviri linzadan qanday masofada hosil bo'ladi?",o:["F masofada","2F masofada","F/2 masofada","Cheksizda"],a:3},
+  {q:"Fokus masofasi 10 cm bo'lgan sochuvchi linza fokusida turgan nuqtaning tasviri linzadan qanday masofada hosil bo'ladi?",o:["5 cm","10 cm","20 cm","Cheksizda"],a:3},
+  {q:"Fokus masofasi 20 cm bo'lgan linzaning optik kuchini toping.",o:["20 D","5 D","0,05 D","2 D"],a:1},
+  {q:"Linzaning optik kuchi 4 D. Shu linzaning fokus masofasi necha cm?",o:["4 cm","25 cm","40 cm","0,25 cm"],a:1},
+  {q:"Buyum yupqa yig'uvchi linzadan 2F masofada joylashgan bo'lsa, uning tasviri qanday bo'ladi?",o:["Kattalashgan haqiqiy","Teng o'lchamli haqiqiy","Kichiklashgan haqiqiy","Xayoliy"],a:1},
+  {q:"Ko'zning to'r pardasida qanday tasvir hosil bo'ladi?",o:["Kattalashgan to'g'ri haqiqiy","Kichiklashgan teskari haqiqiy","Kichiklashgan to'g'ri xayoliy","Kattalashgan teskari xayoliy"],a:1},
+  {q:"Mikroskopda qanday tasvir hosil bo'ladi?",o:["Kichiklashgan haqiqiy","Kattalashgan xayoliy","Kichiklashgan xayoliy","Kattalashgan haqiqiy"],a:1},
+  {q:"Shaffof muhitda tarqalayotgan ko'zga ko'rinuvchi yorug'lik to'lqinlaridan qaysi birining tezligi eng katta bo'ladi?",o:["Binafsha","Ko'k","Qizil","Yashil"],a:2},
+  {q:"Yorug'lik ta'sirida moddadan elektronlar uzilishi ... deb ataladi.",o:["Termoemissiya","Ionizatsiya","Fotoeffekt","Lyuminestsensiya"],a:2},
+  {q:"Fotoeffektda yorug'lik intensivligini 4 marta kamaytirsak, 1 s da ajralib chiqayotgan elektronlar soni qanday o'zgaradi?",o:["4 marta kamayadi","O'zgarmaydi","2 marta kamayadi","4 marta ortadi"],a:0},
+  {q:"Rux uchun elektronlarning chiqish ishi 4,1 eV. Fotoeffektning qizil chegarasini aniqlang (mkm).",o:["0,30 mkm","3,0 mkm","0,03 mkm","30 mkm"],a:0},
+  {q:"Fotonning tinch holatdagi massasi nimaga teng?",o:["Elektronning massasiga","Protonning massasiga","Nolga teng","Planck doimiysiga"],a:2},
+  {q:"Yorug'likning to'lqin uzunligi 2 marta oshsa, uning fotoni energiyasi qanday o'zgaradi?",o:["2 marta ortadi","2 marta kamayadi","O'zgarmaydi","4 marta kamayadi"],a:1},
+  {q:"v chastotali fotonning impulsi qanday?",o:["hv/c","hv","hv·c","h/v"],a:0},
+  {q:"Fotoeffekt uchun Eynshteyn tenglamasi nimani bildiradi?",o:["Foton energiyasi = chiqish ishi + kinetik energiya","Foton impulsi = massa × tezlik","Foton massasi = energiya/c²","Intensivlik = fotonlar soni × chastota"],a:0},
+  {q:"Yorug'lik intensivligi kvant nazariyasi bo'yicha nimaga bog'liq?",o:["Faqat chastotaga","Fotonlar soniga va energiyasiga","Faqat amplitudaga","To'lqin uzunligiga"],a:1},
+  {q:"Fotoelement bu ... asbobdir.",o:["Mexanik energiyani elektr energiyasiga aylantiruvchi","Yorug'lik energiyasini elektr energiyasiga aylantiruvchi","Issiqlikni elektr energiyasiga aylantiruvchi","Elektr energiyasini yorug'lik energiyasiga aylantiruvchi"],a:1},
+  {q:"Fotoeffektda fotoelektronlar kinetik energiyasining eng katta qiymati nimaga bog'liq?",o:["Yorug'lik intensivligiga","Tushayotgan fotonlar soniga","Yorug'lik chastotasiga","Metallning massasiga"],a:2},
+  {q:"Rezerford tajribasida alfa-zarralar nima bilan ta'sirlashuv natijasida sochiladilar?",o:["Elektronlar bilan","Atom yadrosi bilan","Neytronlar bilan","Fotonlar bilan"],a:1},
+  {q:"Atom E2 energiyali holatdan E1 energiyali holatga o'tganida nurlagan fotonning energiyasi qanday bo'ladi?",o:["E1 + E2","E2 - E1","E1 - E2","E1 × E2"],a:1},
+  {q:"Radioaktiv yemirilish natijasida yadro qanday o'zgaradi?",o:["Massa soni o'zgarmaydi","Zaryad o'zgarmaydi","Massa soni va zaryad o'zgaradi","Faqat neytronlar soni o'zgaradi"],a:2},
+  {q:"Alfa-zarrachaning massasi nimaga teng?",o:["1 a.b.m.","2 a.b.m.","4 a.b.m.","Nol"],a:2},
+  {q:"Izotoplar deb nimaga aytiladi?",o:["Bir xil massa sonli elementlar","Bir xil protonlar soniga, lekin turli neytronlar soniga ega atomlar","Bir xil neytronlar soniga ega atomlar","Turli elementlarning bir xil xossali atomlari"],a:1},
+  {q:"Yarim yemirilish davri 1 yil bo'lgan radioaktiv moddaning to'rtdan uch qismi necha yilda yemiriladi?",o:["3 yil","4 yil","2 yil","1,5 yil"],a:2},
+  {q:"Atom yadrosi qanday zarralardan tashkil topgan?",o:["Proton va elektronlar","Proton va neytronlar","Neytron va elektronlar","Faqat protonlar"],a:1},
+  {q:"Atom yadrosida 30 ta proton, 37 ta neytron bor. Yadro nechta elementar zaryadga ega?",o:["37","67","30","7"],a:2},
+  {q:"Erkin proton va neytronlardan atom yadrosi hosil bo'lish jarayonida energiya ajraladimi yoki yutiladimi?",o:["Ajraladi","Yutiladi","O'zgarmaydi","Avval ajraladi, keyin yutiladi"],a:0},
+  {q:"Quyidagi zarrachalardan qaysi biri yadroga oson kira oladi va yadro reaksiyasini yuzaga chiqaradi?",o:["Proton","Alfa-zarra","Neytron","Elektron"],a:2},
+  {q:"Mexanik tebranishlar kvanti nima deb ataladi?",o:["Foton","Fonon","Magnon","Gluon"],a:1},
+  {q:"Radioaktiv izotop yadrosidan pozitron ajralib chiqsa, uning tartib raqami qanday o'zgaradi?",o:["1 ga ortadi","1 ga kamayadi","O'zgarmaydi","2 ga kamayadi"],a:1},
+  {q:"Yadro reaktorlarida yoqilg'i sifatida qaysi moddalar ishlatiladi?",o:["Grafit va kadmiy","Uran va plutoniy","Og'ir suv va bor","Barcha keltirilganlar"],a:1},
+  {q:"Bolometr yordamida qanday fizik kattalik o'lchanadi?",o:["Yorug'lik tezligi","Nurlanish energiyasi (infraqizil)","Magnit maydon kuchlanganligi","Elektr kuchlanish"],a:1},
+  {q:"Mendeleev davriy sistemasidagi tartib raqami 92, neytronlar soni 146 ta bo'lgan yadroning massa soni qanday?",o:["146","92","238","54"],a:2},
+  {q:"Radiyning yarim yemirilish davri 1600 yil. Necha yildan so'ng atomlar soni 4 marta kamayadi?",o:["800 yil","1600 yil","3200 yil","6400 yil"],a:2},
+  {q:"Agar yadro gamma-kvant nurlasa, moddani tavsiflovchi qanday kattalik o'zgaradi?",o:["Massa soni","Protonlar soni","Neytronlar soni","Energiyasi"],a:3},
+  {q:"Vaqt o'tishi bilan jismning fazodagi vaziyatini boshqa jismlarga nisbatan o'zgarishiga .... deyiladi.",o:["Tezlik","Harakat","Tezlanish","Yo'l"],a:1},
+  {q:"Molekulyar-kinetik nazariya bu ...",o:["Moddalarning kimyoviy xossalarini o'rganuvchi nazariya","Moddalar molekulalardan tuzilgan, ular harakatda va o'zaro ta'sirda bo'ladi degan nazariya","Issiqlik o'tkazuvchanligini tushuntiruvchi nazariya","Elektromagnit hodisalarni o'rganuvchi nazariya"],a:1},
+  {q:"Molekulyar kuchlar ..... tabiatiga ega.",o:["Faqat tortishish","Faqat itarish","Tortishish va itarish","Gravitatsion"],a:2}
+];
+
+let cv=1,qs=[],ci=0,sc=0,answered=false,ti=null,tl=30;
+
+function gq(v){return Q.slice((v-1)*25,v*25)}
+
+function startQuiz(v){
+  cv=v;qs=gq(v);ci=0;sc=0;
+  document.getElementById('sw').style.display='none';
+  document.getElementById('sr').style.display='none';
+  document.getElementById('sq').style.display='block';
+  document.getElementById('vlbl').textContent=v+'-variant';
+  showQ();
+}
+
+function showQ(){
+  answered=false;clearInterval(ti);tl=30;
+  document.getElementById('nb').style.display='none';
+  const q=qs[ci],tot=qs.length;
+  document.getElementById('qc').textContent=(ci+1)+' / '+tot;
+  document.getElementById('qn').textContent='SAVOL '+(ci+1);
+  document.getElementById('qt').textContent=q.q;
+  document.getElementById('pf').style.width=Math.round((ci/tot)*100)+'%';
+  document.getElementById('sl').textContent=sc+" to'g'ri";
+  updT();
+  const L=['A','B','C','D'],od=document.getElementById('opts');
+  od.innerHTML='';
+  q.o.forEach((opt,i)=>{
+    const b=document.createElement('button');
+    b.className='ob';
+    b.innerHTML='<span class="okey">'+L[i]+'</span><span>'+opt+'</span>';
+    b.onclick=()=>selA(i);
+    od.appendChild(b);
+  });
+  ti=setInterval(()=>{tl--;updT();if(tl<=0){clearInterval(ti);if(!answered)toOut();}},1000);
+}
+
+function updT(){
+  const e=document.getElementById('td');
+  e.textContent=tl+'s';
+  e.className=tl<=10?'warn-t':'';
+}
+
+function toOut(){
+  answered=true;
+  const q=qs[ci];
+  document.getElementById('opts').querySelectorAll('.ob').forEach((b,i)=>{b.disabled=true;if(i===q.a)b.classList.add('reveal');});
+  document.getElementById('nb').style.display='inline-flex';
+}
+
+function selA(idx){
+  if(answered)return;answered=true;clearInterval(ti);
+  const q=qs[ci];
+  document.getElementById('opts').querySelectorAll('.ob').forEach((b,i)=>{
+    b.disabled=true;
+    if(i===q.a)b.classList.add('correct');
+    else if(i===idx&&idx!==q.a)b.classList.add('wrong');
+  });
+  if(idx===q.a)sc++;
+  document.getElementById('sl').textContent=sc+" to'g'ri";
+  document.getElementById('nb').style.display='inline-flex';
+}
+
+function nextQ(){
+  ci++;
+  if(ci>=qs.length)showRes();
+  else showQ();
+}
+
+function showRes(){
+  clearInterval(ti);
+  document.getElementById('sq').style.display='none';
+  document.getElementById('sr').style.display='block';
+  const tot=qs.length,pct=Math.round((sc/tot)*100);
+  document.getElementById('rv').textContent=cv+'-variant natijalari';
+  document.getElementById('rs').textContent=sc+" ta to'g'ri javob, "+tot+' ta savoldan';
+  document.getElementById('rc2').textContent=sc;
+  document.getElementById('rw').textContent=tot-sc;
+  document.getElementById('rpct').textContent=pct+'%';
+  document.getElementById('rp').textContent=pct+'%';
+  document.getElementById('ra').style.strokeDashoffset=326.7-(326.7*pct/100);
+}
+
+function goHome(){
+  clearInterval(ti);
+  document.getElementById('sq').style.display='none';
+  document.getElementById('sr').style.display='none';
+  document.getElementById('sw').style.display='block';
+}
+</script>
+</body>
+</html>
